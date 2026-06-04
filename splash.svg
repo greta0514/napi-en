@@ -1,0 +1,24 @@
+<svg width="1170" height="2532" viewBox="0 0 1170 2532" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe4f1"></stop>
+      <stop offset="100%" stop-color="#ffffff"></stop>
+    </linearGradient>
+  </defs>
+
+  <rect width="1170" height="2532" fill="url(#bg)"></rect>
+
+  <circle cx="585" cy="1100" r="180" fill="#f7b6d2" opacity="0.4"></circle>
+
+  <text x="50%" y="48%" text-anchor="middle" font-size="120" font-family="Arial" fill="#b06b8f">
+    🌸
+  </text>
+
+  <text x="50%" y="55%" text-anchor="middle" font-size="64" font-family="Arial" fill="#6b3b55">
+    Napi Én
+  </text>
+
+  <text x="50%" y="60%" text-anchor="middle" font-size="32" font-family="Arial" fill="#8b6b7a">
+    nyugalom • fejlődés • önmagad
+  </text>
+</svg>
