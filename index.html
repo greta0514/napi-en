@@ -1,146 +1,296 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Napi Én 🌸</title>
+<title>Napi Én 🌸 V6</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Napi Én">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #fff5fb;
-  color: #4a2b3a;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#fff5fb;
+  color:#4a2b3a;
 }
 
-header {
-  padding: 20px;
-  text-align: center;
-  font-size: 22px;
+header{
+  text-align:center;
+  padding:10px;
+  font-size:18px;
 }
 
-.page {
-  display: none;
-  padding: 20px;
+.page{display:none;padding:15px;}
+.active{display:block;}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  background:white;
+  border-top:1px solid #ddd;
+  padding:10px 0;
 }
 
-.active {
-  display: block;
+button{background:none;border:none;font-size:14px;}
+
+input,textarea,select{
+  width:100%;
+  margin:5px 0;
+  padding:8px;
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background: white;
-  border-top: 1px solid #ddd;
-  padding: 10px 0;
+/* 📅 calendar */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:4px;
 }
 
-.bottom-nav button {
-  background: none;
-  border: none;
-  font-size: 14px;
+.day{
+  background:white;
+  border-radius:8px;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  font-size:12px;
 }
-input, textarea {
-  width: 100%;
-  margin: 5px 0;
-  padding: 8px;
+
+.day.good{background:#d7f7e0;}
+.day.bad{background:#ffe0e0;}
+.day.selected{background:#f7b6d2;color:white;}
+
+/* 🌸 kert */
+.garden{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+
+.flower{
+  font-size:20px;
+  opacity:0;
+  transform:scale(0.5);
+  animation: bloom 0.8s forwards;
+}
+
+@keyframes bloom{
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>Napi Én 🌸</header>
+<header>Napi Én 🌸 V6</header>
 
-<!-- 🏠 KEZDŐLAP -->
-<div id="home" class="page active">
-  <h2>Mai napod 🌸</h2>
-  <p>Írd be a mai gondolataid:</p>
-  <textarea id="todayNote"></textarea>
-  <button onclick="saveNote()">Mentés</button>
-</div>
+<!-- 🏠 HOME -->
+<div class="page active" id="home">
+  <h3>🏠 Streak & Összegzés</h3>
 
-<!-- 💪 EGÉSZSÉG -->
-<div id="health" class="page">
-  <h2>💪 Egészség</h2>
+  <p>🔥 Streak: <span id="streak">0</span> nap</p>
+  <p>🏆 Legjobb: <span id="best">0</span> nap</p>
 
-  <h3>Plank (perc:másodperc)</h3>
-  <input id="plank" placeholder="pl. 2:15"/>
+  <hr>
 
-  <h3>Víz (pohár)</h3>
-  <input id="water" placeholder="pl. 6"/>
-
-  <h3>Alvás (óra)</h3>
-  <input id="sleep" placeholder="pl. 7"/>
-
-  <h3>Heti étrend jegyzet</h3>
-  <textarea id="diet"></textarea>
-
-  <button onclick="saveHealth()">Mentés</button>
-</div>
-
-<!-- 💖 ÉRZELMEK -->
-<div id="emotions" class="page">
-  <h2>💖 Érzelmek</h2>
-  <textarea id="emotionNote" placeholder="Belső időjárás, gondolatok..."></textarea>
-  <button onclick="saveEmotions()">Mentés</button>
-</div>
-
-<!-- 🌸 KERT -->
-<div id="garden" class="page">
-  <h2>🌸 Nyugalom kertje</h2>
-  <textarea id="gardenNote" placeholder="Mit ültettél ma a lelkedbe?"></textarea>
-  <button onclick="saveGarden()">Mentés</button>
+  <div id="summary"></div>
 </div>
 
 <!-- 📅 NAPTÁR -->
-<div id="calendar" class="page">
-  <h2>📅 Naptár (egyszerű)</h2>
-  <p>Itt később napi adatokat fogunk megjeleníteni.</p>
+<div class="page" id="calendar">
+
+  <h3>📅 Naptár</h3>
+
+  <div class="grid" id="grid"></div>
+
+  <h4 id="dateText">Válassz napot</h4>
+
+  <label>Hangulat</label>
+  <select id="mood">
+    <option value="good">☀️ Jó nap</option>
+    <option value="neutral">🌤️ Normál</option>
+    <option value="bad">🌧️ Nehéz nap</option>
+  </select>
+
+  <label>Plank</label>
+  <input id="plank">
+
+  <label>Víz</label>
+  <input id="water">
+
+  <label>Alvás</label>
+  <input id="sleep">
+
+  <label>Jegyzet</label>
+  <textarea id="note"></textarea>
+
+  <button onclick="saveDay()">Mentés</button>
+</div>
+
+<!-- 🌸 KERT -->
+<div class="page" id="garden">
+  <h3>🌸 Nyugalom kertje</h3>
+
+  <p>Virágok száma = jó napok száma</p>
+
+  <div class="garden" id="gardenBox"></div>
 </div>
 
 <!-- NAV -->
 <div class="bottom-nav">
   <button onclick="show('home')">🏠</button>
-  <button onclick="show('emotions')">💖</button>
-  <button onclick="show('health')">💪</button>
-  <button onclick="show('garden')">🌸</button>
   <button onclick="show('calendar')">📅</button>
+  <button onclick="show('garden')">🌸</button>
 </div>
 
 <script>
-function show(page){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
+
+let selected=null;
+
+// 🔑 storage
+function key(d){return "day_"+d}
+
+// 🧭 nav
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function saveNote(){
-  localStorage.setItem('note', document.getElementById('todayNote').value);
+// 📅 build calendar
+function build(){
+  let g=document.getElementById("grid");
+  g.innerHTML="";
+
+  let now=new Date();
+  let y=now.getFullYear();
+  let m=now.getMonth();
+  let days=new Date(y,m+1,0).getDate();
+
+  for(let i=1;i<=days;i++){
+    let date=`${y}-${m+1}-${i}`;
+    let data=JSON.parse(localStorage.getItem(key(date))||"{}");
+
+    let d=document.createElement("div");
+    d.className="day";
+    if(data.mood) d.classList.add(data.mood);
+
+    d.innerText=i;
+
+    d.onclick=()=>select(date,d);
+
+    g.appendChild(d);
+  }
 }
 
-function saveHealth(){
-  localStorage.setItem('plank', document.getElementById('plank').value);
-  localStorage.setItem('water', document.getElementById('water').value);
-  localStorage.setItem('sleep', document.getElementById('sleep').value);
-  localStorage.setItem('diet', document.getElementById('diet').value);
+// 📌 select
+function select(date,el){
+  selected=date;
+  dateText.innerText=date;
+
+  let data=JSON.parse(localStorage.getItem(key(date))||"{}");
+
+  mood.value=data.mood||"neutral";
+  plank.value=data.plank||"";
+  water.value=data.water||"";
+  sleep.value=data.sleep||"";
+  note.value=data.note||"";
+
+  document.querySelectorAll('.day').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
 }
 
-function saveEmotions(){
-  localStorage.setItem('emotion', document.getElementById('emotionNote').value);
+// 💾 save
+function saveDay(){
+  if(!selected) return;
+
+  let data={
+    mood:mood.value,
+    plank:plank.value,
+    water:water.value,
+    sleep:sleep.value,
+    note:note.value
+  };
+
+  localStorage.setItem(key(selected),JSON.stringify(data));
+
+  updateAll();
+  build();
+  renderGarden();
 }
 
-function saveGarden(){
-  localStorage.setItem('garden', document.getElementById('gardenNote').value);
+// 🔥 STREAK LOGIKA
+function calcStreak(){
+  let streak=0;
+  let best=0;
+  let current=0;
+
+  let dates=Object.keys(localStorage)
+    .filter(k=>k.startsWith("day_"))
+    .sort();
+
+  for(let d of dates){
+    let data=JSON.parse(localStorage.getItem(d));
+    if(data.mood=="good"){
+      current++;
+      best=Math.max(best,current);
+    } else {
+      current=0;
+    }
+  }
+
+  streak=current;
+
+  document.getElementById("streak").innerText=streak;
+  document.getElementById("best").innerText=best;
 }
+
+// 🏠 summary
+function updateSummary(){
+  summary.innerHTML="🌸 Vezess be napokat a naptárban";
+}
+
+// 🌸 GARDEN
+function renderGarden(){
+  let box=document.getElementById("gardenBox");
+  box.innerHTML="";
+
+  let goodDays=0;
+
+  for(let k in localStorage){
+    if(k.startsWith("day_")){
+      let d=JSON.parse(localStorage.getItem(k));
+      if(d.mood=="good") goodDays++;
+    }
+  }
+
+  for(let i=0;i<goodDays;i++){
+    let f=document.createElement("div");
+    f.className="flower";
+    f.innerText="🌸";
+    box.appendChild(f);
+  }
+}
+
+// 🔄 update all
+function updateAll(){
+  calcStreak();
+  renderGarden();
+  updateSummary();
+}
+
+// init
+build();
+updateAll();
+
 </script>
 
 </body>
