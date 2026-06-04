@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Napi Én</title>
-<link rel="apple-touch-icon" href="icon.png">
+
+<title>Napi Én 🌸</title>
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Napi Én">
@@ -12,60 +13,47 @@
 <style>
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #fff7fb;
-  color: #333;
+  font-family: Arial;
+  background: #fff5fb;
+  color: #4a2b3a;
 }
 
 header {
   padding: 20px;
   text-align: center;
-  font-size: 18px;
-  color: #b06b8f;
+  font-size: 22px;
 }
 
-.screen { display: none; padding: 15px; }
-.active { display: block; }
-
-.card {
-  background: white;
-  padding: 15px;
-  border-radius: 18px;
-  margin-bottom: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+.page {
+  display: none;
+  padding: 20px;
 }
 
-button {
-  border: none;
-  padding: 10px;
-  border-radius: 12px;
-  margin-top: 5px;
-  background: #f3c6da;
+.active {
+  display: block;
 }
 
-input, textarea, select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 10px;
-  border: 1px solid #eee;
-}
-
-.nav {
+.bottom-nav {
   position: fixed;
   bottom: 0;
   width: 100%;
   display: flex;
+  justify-content: space-around;
   background: white;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #ddd;
+  padding: 10px 0;
 }
 
-.nav button {
-  flex: 1;
+.bottom-nav button {
   background: none;
-  font-size: 18px;
+  border: none;
+  font-size: 14px;
 }
-.small { font-size: 12px; color: gray; }
+input, textarea {
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px;
+}
 </style>
 </head>
 
@@ -73,141 +61,86 @@ input, textarea, select {
 
 <header>Napi Én 🌸</header>
 
-<!-- HOME -->
-<div id="home" class="screen active">
-  <div class="card">
-    <h3>❤️ Kapcsolati nyugalom</h3>
-    <button onclick="setCalm(true)">Ma nyugodt voltam</button>
-    <button onclick="setCalm(false)">Ma ideges voltam</button>
-    <p id="calmStatus"></p>
-  </div>
-
-  <div class="card">
-    <h3>💪 Plank</h3>
-    <input id="plank" placeholder="pl. 02:15"/>
-    <button onclick="savePlank()">Mentés</button>
-    <p id="plankList"></p>
-  </div>
+<!-- 🏠 KEZDŐLAP -->
+<div id="home" class="page active">
+  <h2>Mai napod 🌸</h2>
+  <p>Írd be a mai gondolataid:</p>
+  <textarea id="todayNote"></textarea>
+  <button onclick="saveNote()">Mentés</button>
 </div>
 
-<!-- EMOTIONS -->
-<div id="emotions" class="screen">
-  <div class="card">
-    <h3>🫧 Mentális súly</h3>
-    <textarea id="weight"></textarea>
-    <button onclick="saveWeight()">Mentés</button>
-    <p id="weights"></p>
-  </div>
+<!-- 💪 EGÉSZSÉG -->
+<div id="health" class="page">
+  <h2>💪 Egészség</h2>
 
-  <div class="card">
-    <h3>🌷 Én-ígéretek</h3>
-    <textarea id="promise"></textarea>
-    <button onclick="savePromise()">Mentés</button>
-    <p id="promises"></p>
-  </div>
+  <h3>Plank (perc:másodperc)</h3>
+  <input id="plank" placeholder="pl. 2:15"/>
 
-  <div class="card">
-    <h3>🌿 Belső időjárás</h3>
-    <select id="weather">
-      <option>☀️ nyugodt</option>
-      <option>⛅ kicsit zavaros</option>
-      <option>🌧️ stresszes</option>
-      <option>🌪️ túlterhelt</option>
-      <option>🌙 csendes</option>
-    </select>
-    <button onclick="saveWeather()">Mentés</button>
-    <p id="weatherOut"></p>
-  </div>
+  <h3>Víz (pohár)</h3>
+  <input id="water" placeholder="pl. 6"/>
+
+  <h3>Alvás (óra)</h3>
+  <input id="sleep" placeholder="pl. 7"/>
+
+  <h3>Heti étrend jegyzet</h3>
+  <textarea id="diet"></textarea>
+
+  <button onclick="saveHealth()">Mentés</button>
 </div>
 
-<!-- GARDEN -->
-<div id="garden" class="screen">
-  <div class="card">
-    <h3>🌸 Nyugalom kertje</h3>
-    <p id="gardenPoints"></p>
-    <button onclick="addPoint()">+1 nyugodt nap pont</button>
-  </div>
+<!-- 💖 ÉRZELMEK -->
+<div id="emotions" class="page">
+  <h2>💖 Érzelmek</h2>
+  <textarea id="emotionNote" placeholder="Belső időjárás, gondolatok..."></textarea>
+  <button onclick="saveEmotions()">Mentés</button>
 </div>
 
-<!-- TIMELINE -->
-<div id="timeline" class="screen">
-  <div class="card">
-    <h3>📖 Idővonal</h3>
-    <textarea id="log"></textarea>
-    <button onclick="saveLog()">Mentés</button>
-    <p id="logs"></p>
-  </div>
+<!-- 🌸 KERT -->
+<div id="garden" class="page">
+  <h2>🌸 Nyugalom kertje</h2>
+  <textarea id="gardenNote" placeholder="Mit ültettél ma a lelkedbe?"></textarea>
+  <button onclick="saveGarden()">Mentés</button>
+</div>
+
+<!-- 📅 NAPTÁR -->
+<div id="calendar" class="page">
+  <h2>📅 Naptár (egyszerű)</h2>
+  <p>Itt később napi adatokat fogunk megjeleníteni.</p>
 </div>
 
 <!-- NAV -->
-<div class="nav">
+<div class="bottom-nav">
   <button onclick="show('home')">🏠</button>
   <button onclick="show('emotions')">💖</button>
+  <button onclick="show('health')">💪</button>
   <button onclick="show('garden')">🌸</button>
-  <button onclick="show('timeline')">📖</button>
+  <button onclick="show('calendar')">📅</button>
 </div>
 
 <script>
-// NAV
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function show(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
 }
 
-// DATA
-let calm = JSON.parse(localStorage.getItem("calm")||"[]");
-let planks = JSON.parse(localStorage.getItem("planks")||"[]");
-let weights = JSON.parse(localStorage.getItem("weights")||"[]");
-let promises = JSON.parse(localStorage.getItem("promises")||"[]");
-let weather = JSON.parse(localStorage.getItem("weather")||"[]");
-let logs = JSON.parse(localStorage.getItem("logs")||"[]");
-let garden = parseInt(localStorage.getItem("garden")||"0");
-
-// SAVE FUNCTIONS
-function setCalm(v){
-  calm.push(v);
-  localStorage.setItem("calm", JSON.stringify(calm));
-  document.getElementById("calmStatus").innerText = "Mentve 🌸";
+function saveNote(){
+  localStorage.setItem('note', document.getElementById('todayNote').value);
 }
 
-function savePlank(){
-  planks.push(document.getElementById("plank").value);
-  localStorage.setItem("planks", JSON.stringify(planks));
-  document.getElementById("plankList").innerText = planks.join(", ");
+function saveHealth(){
+  localStorage.setItem('plank', document.getElementById('plank').value);
+  localStorage.setItem('water', document.getElementById('water').value);
+  localStorage.setItem('sleep', document.getElementById('sleep').value);
+  localStorage.setItem('diet', document.getElementById('diet').value);
 }
 
-function saveWeight(){
-  weights.push(document.getElementById("weight").value);
-  localStorage.setItem("weights", JSON.stringify(weights));
-  document.getElementById("weights").innerText = "Mentve";
+function saveEmotions(){
+  localStorage.setItem('emotion', document.getElementById('emotionNote').value);
 }
 
-function savePromise(){
-  promises.push(document.getElementById("promise").value);
-  localStorage.setItem("promises", JSON.stringify(promises));
-  document.getElementById("promises").innerText = "Mentve";
+function saveGarden(){
+  localStorage.setItem('garden', document.getElementById('gardenNote').value);
 }
-
-function saveWeather(){
-  weather.push(document.getElementById("weather").value);
-  localStorage.setItem("weather", JSON.stringify(weather));
-  document.getElementById("weatherOut").innerText = "Mentve";
-}
-
-function saveLog(){
-  logs.push(document.getElementById("log").value);
-  localStorage.setItem("logs", JSON.stringify(logs));
-  document.getElementById("logs").innerText = "Mentve";
-}
-
-function addPoint(){
-  garden++;
-  localStorage.setItem("garden", garden);
-  document.getElementById("gardenPoints").innerText = "Pontok: " + garden;
-}
-
-// INIT
-document.getElementById("gardenPoints").innerText = "Pontok: " + garden;
 </script>
 
 </body>
